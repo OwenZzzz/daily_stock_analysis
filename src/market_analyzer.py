@@ -463,20 +463,29 @@ Lagging: {bottom_sectors_text if bottom_sectors_text else "N/A"}"""
         indices_placeholder = indices_text if indices_text else ("No index data (API error)" if self.region == "us" else "暂无指数数据（接口异常）")
         news_placeholder = news_text if news_text else ("No relevant news" if self.region == "us" else "暂无相关新闻")
 
-        # 美股场景使用英文提示语，便于生成更符合美股语境的报告
+        # 美股场景使用中英双语格式，便于中文用户阅读
         if self.region == "us":
             data_no_indices_hint_en = (
                 "Note: Market data fetch failed. Rely mainly on [Market News] for qualitative analysis. Do not invent index levels."
                 if not indices_text
                 else ""
             )
-            return f"""You are a professional US/A/H market analyst. Please produce a concise US market recap report based on the data below.
+            return f"""You are a professional US/A/H market analyst. Please produce a US market recap report in **BILINGUAL format (Chinese + English)**.
 
 [Requirements]
 - Output pure Markdown only
 - No JSON
 - No code blocks
 - Use emoji sparingly in headings (at most one per heading)
+- **CRITICAL**: Each section must have BOTH Chinese and English versions
+- Format: Chinese paragraph first, followed by English translation in a blockquote
+
+Example bilingual format:
+### 1. 市场总结 / Market Summary
+
+美股三大指数集体收涨，科技股领涨。
+
+> The US equity markets closed higher, led by technology stocks.
 
 ---
 
@@ -501,34 +510,48 @@ Lagging: {bottom_sectors_text if bottom_sectors_text else "N/A"}"""
 
 ---
 
-# Output Template (follow this structure)
+# Output Template (follow this structure exactly)
 
-## {overview.date} US Market Recap
+## {overview.date} 美股大盘复盘 / US Market Recap
 
-### 1. Market Summary
-(2-3 sentences on overall market performance, index moves, volume)
+### 一、市场总结 / 1. Market Summary
+(Chinese: 2-3句话概括今日美股整体表现)
 
-### 2. Index Commentary
-(Analyse S&P 500, Nasdaq, Dow and other major index moves.)
+(English translation in blockquote)
 
-### 3. Fund Flows
-(Interpret volume and flow implications)
+### 二、指数点评 / 2. Index Commentary
+(Chinese: 分析标普500、纳指、道指等主要指数走势)
 
-### 4. Sector/Theme Highlights
-(Analyze drivers behind leading/lagging sectors)
+(English translation in blockquote)
 
-### 5. Outlook
-(Short-term view based on price action and news)
+### 三、资金动向 / 3. Fund Flows
+(Chinese: 解读成交量和资金流向含义)
 
-### 6. Risk Alerts
-(Key risks to watch)
+(English translation in blockquote)
 
-### 7. Strategy Plan
-(Provide risk-on/neutral/risk-off stance, position sizing guideline, and one invalidation trigger.)
+### 四、热点解读 / 4. Sector/Theme Highlights
+(Chinese: 分析领涨领跌板块背后的驱动因素)
+
+(English translation in blockquote)
+
+### 五、后市展望 / 5. Outlook
+(Chinese: 结合走势和新闻给出短期预判)
+
+(English translation in blockquote)
+
+### 六、风险提示 / 6. Risk Alerts
+(Chinese: 需要关注的风险点)
+
+(English translation in blockquote)
+
+### 七、策略计划 / 7. Strategy Plan
+(Chinese: 给出风险偏好/中性/避险立场、仓位建议、触发条件；补充"建议仅供参考，不构成投资建议")
+
+(English translation in blockquote)
 
 ---
 
-Output the report content directly, no extra commentary.
+Output the bilingual report content directly, no extra commentary. Ensure every section has both Chinese text and English translation.
 """
 
         # A 股场景使用中文提示语
